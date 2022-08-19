@@ -1,4 +1,8 @@
-# FSharp.Json: JSON Serialization Library
+[![build](https://github.com/PragmaticFlow/FSharp.Json.New/actions/workflows/build.yml/badge.svg)](https://github.com/PragmaticFlow/FSharp.Json.New/actions/workflows/build.yml)
+[![NuGet](https://img.shields.io/nuget/v/FSharp.Json.New.svg)](https://www.nuget.org/packages/FSharp.Json.New/)
+[![Gitter](https://badges.gitter.im/nbomber/community.svg)](https://gitter.im/nbomber/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+
+# FSharp.Json.New: JSON Serialization Library
 
 FSharp.Json is F# JSON serialization library based on Reflection it's written in F# for F#.
 
@@ -109,11 +113,11 @@ The core of FSharp.Json library is located in single [Core.fs file][core].
 
 ## Documentation
 
-This document describe all details of FSharp.Json library. The source code also has thorough documentation in comments to main types. Each feature of FSharp.Json is thoroughly covered by [unit tests](FSharp.Json.Tests).
+This document describe all details of FSharp.Json library. The source code also has thorough documentation in comments to main types. Each feature of FSharp.Json is thoroughly covered by [unit tests](tests/FSharp.Json.Tests).
 
 ## API Overview
 
-Most of API functions are defined in [Json module](FSharp.Json/Interface.fs).
+Most of API functions are defined in [Json module](src/FSharp.Json.New/Interface.fs).
 
 Easiest way to serialize is to call `Json.serialize` function.
 It serializes any supported F# type to string containing JSON.
@@ -129,11 +133,11 @@ Whenever custom configuration should be used following functions are useful:
  * `Json.serializeEx`
  * `Json.deserializeEx<'T>` 
 
-Prefix `Ex` stands for "extended". Both of these functions take [JsonConfig](FSharp.Json/InterfaceTypes.fs) instance as a first parameter.
+Prefix `Ex` stands for "extended". Both of these functions take [JsonConfig](src/FSharp.Json.New/InterfaceTypes.fs) instance as a first parameter.
 
 #### Configuration
 
-[JsonConfig](FSharp.Json/InterfaceTypes.fs) represents global configuration of serialization.
+[JsonConfig](src/FSharp.Json.New/InterfaceTypes.fs) represents global configuration of serialization.
 There's convenient way to override default configuration by using `JsonConfig.create` function.
 All parameters of the function are optional and those that are provided override default values.
 
@@ -145,7 +149,7 @@ Some products like [Apache Spark](https://spark.apache.org/) require unformatted
 It is usefull to produce unformatted single line JSON in some other scenarios.
 There is a function to produce unformatted JSON: `Json.serializeU`.
 `U` stands for "unformatted". It has the same signature as `Json.serialize` function.
-The function is a shorthand to using `unformatted` member on [JsonConfig](FSharp.Json/InterfaceTypes.fs).
+The function is a shorthand to using `unformatted` member on [JsonConfig](src/FSharp.Json.New/InterfaceTypes.fs).
 
 ## Supported Types
 
@@ -390,8 +394,8 @@ let deserialized = Json.deserialize<TheNumberEnum> json
 
 #### Customizing enum serialization
 
-EnumValue member of [JsonField](FSharp.Json/InterfaceTypes.fs) attribute could be used to change serialization of enums.
-There are two [modes](FSharp.Json/InterfaceTypes.fs) supported currently: enum value name and enum value.
+EnumValue member of [JsonField](src/FSharp.Json.New/InterfaceTypes.fs) attribute could be used to change serialization of enums.
+There are two [modes](src/FSharp.Json.New/InterfaceTypes.fs) supported currently: enum value name and enum value.
 
 Here's an example of custom enum serialization:
 ```fsharp
@@ -481,7 +485,7 @@ let deserialized = Json.deserialize<TheUnion> json
 
 #### Changing union case key
 
-The string that represents union case key could be changed with [JsonUnionCase attribute](FSharp.Json/InterfaceTypes.fs).
+The string that represents union case key could be changed with [JsonUnionCase attribute](src/FSharp.Json.New/InterfaceTypes.fs).
 
 See the example below:
 
@@ -564,7 +568,7 @@ let deserialized = Json.deserialize<TheRecord> json
 
 #### Union modes
 
-There's [union mode](FSharp.Json/InterfaceTypes.fs) that represents union as JSON object with two fields.
+There's [union mode](src/FSharp.Json.New/InterfaceTypes.fs) that represents union as JSON object with two fields.
 One field is for case key and another one is for case value. This mode is called "case key as a field value"
 If this mode is used then names of these two field should be provided through [JsonUnion attribute](FSharp.Json/InterfaceTypes.fs).
 
@@ -596,17 +600,17 @@ What if some data needed to be represented as a different type then the default 
 If changing type of the member in F# is not an option then type transform can help.
 
 Any data member is translated F# Type -> JSON type by [default](supported-types) types mapping.
-[Type Transform](FSharp.Json/InterfaceTypes.fs) is applied in the middle of this translation: F# Type -> Alternative F# Type -> JSON type.
+[Type Transform](src/FSharp.Json.New/InterfaceTypes.fs) is applied in the middle of this translation: F# Type -> Alternative F# Type -> JSON type.
 Alternative F# Type -> JSON type is still done by default types mapping, type transform is responsible for F# Type -> Alternative F# Type.
 
-The [Transforms](FSharp.Json/Transforms.fs) module contains transforms that are defined by FSharp.Json library.
-You can define your own transforms by implementing [ITypeTransform interface](FSharp.Json/InterfaceTypes.fs).
+The [Transforms](src/FSharp.Json.New/Transforms.fs) module contains transforms that are defined by FSharp.Json library.
+You can define your own transforms by implementing [ITypeTransform interface](src/FSharp.Json.New/InterfaceTypes.fs).
 
 #### DateTime as epoch time
 
 Let's imagine that some DateTime member should be represented as [epoch time](https://en.wikipedia.org/wiki/Unix_time) in JSON.
 Epoch time is int64 however it is still convenient to work with DateTime in F# code.
-In such case [DateTimeEpoch transform](FSharp.Json/Transforms.fs) is useful.
+In such case [DateTimeEpoch transform](src/FSharp.Json.New/Transforms.fs) is useful.
 
 Here's an example of DateTimeEpoch transform usage:
 
@@ -714,26 +718,3 @@ let data = Json.deserializeEx<ObjectRecord> config json
 // data is { ObjectRecord.value = "The string" }
 // value was deserialized as string because it was string in JSON
 ```
-
-## Release Notes
-
-Could be found [here](RELEASE_NOTES.md).
-
-## Contributing and copyright
-
-The project is hosted on [GitHub][gh] where you can [report issues][issues], fork 
-the project and submit pull requests. If you're adding a new public API, please also 
-consider adding documentation to this [README][readme].
-
-The library is available under Public Domain license, which allows modification and 
-redistribution for both commercial and non-commercial purposes. For more information see the 
-[License file][license] in the GitHub repository. 
-
-  [readme]: tree/master/README.md
-  [gh]: https://github.com/vsapronov/FSharp.Json
-  [issues]: https://github.com/vsapronov/FSharp.Json/issues
-  [license]: https://github.com/vsapronov/FSharp.Json/blob/master/LICENSE.txt
-
-## Maintainer(s)
-
-- [@vsapronov](https://github.com/vsapronov)

@@ -1,0 +1,38 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Authors>vsapronov, Anton Moldovan</Authors>
+    <Company>NBomber</Company>
+    <Version>0.4.2</Version>
+    <Copyright>NBomber@2022</Copyright>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>    
+    <RepositoryUrl>https://github.com/PragmaticFlow/FSharp.Json.New</RepositoryUrl>
+    <PackageTags>F# JSON serialization</PackageTags>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <Description>F# JSON Reflection based serialization library</Description>    
+    <PackageReleaseNotes>added TypeSpan support</PackageReleaseNotes>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>        
+  </PropertyGroup>
+
+  <ItemGroup>    
+    <None Include="../../LICENSE" Pack="true" Visible="false" PackagePath="" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Compile Include="TextConversions.fs" />
+    <Compile Include="JsonValue.fs" />
+    <Compile Include="Utils.fs" />
+    <Compile Include="InterfaceTypes.fs" />
+    <Compile Include="JsonValueHelpers.fs" />
+    <Compile Include="Reflection.fs" />
+    <Compile Include="Core.fs" />
+    <Compile Include="Transforms.fs" />
+    <Compile Include="Interface.fs" />
+  </ItemGroup>
+
+  <ItemGroup />
+
+</Project>
