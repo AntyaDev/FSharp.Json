@@ -1,6 +1,5 @@
 [![build](https://github.com/PragmaticFlow/FSharp.Json.New/actions/workflows/build.yml/badge.svg)](https://github.com/PragmaticFlow/FSharp.Json.New/actions/workflows/build.yml)
 [![NuGet](https://img.shields.io/nuget/v/FSharp.Json.New.svg)](https://www.nuget.org/packages/FSharp.Json.New/)
-[![Gitter](https://badges.gitter.im/nbomber/community.svg)](https://gitter.im/nbomber/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
 # FSharp.Json.New: JSON Serialization Library
 
