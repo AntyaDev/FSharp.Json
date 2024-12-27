@@ -4,7 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <Authors>vsapronov, Anton Moldovan</Authors>
     <Company>NBomber</Company>
-    <Version>0.4.2</Version>
+    <Version>0.5.0</Version>
     <Copyright>NBomber@2022</Copyright>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
