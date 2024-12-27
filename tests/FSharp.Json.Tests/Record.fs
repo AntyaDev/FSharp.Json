@@ -4,6 +4,17 @@ module Record =
     open System
     open NUnit.Framework
 
+    type internal PrivateRecord = {
+        theString: string                
+    }
+    
+    type PrivateTuple = int * int
+    
+    type internal PrivateDU =
+        | A of name:string
+        | B of record:PrivateRecord
+        | C of tuple:int * int
+    
     type TheRecord = {
         theString: string
         theDecimal: decimal
@@ -51,6 +62,35 @@ module Record =
         let actual = Json.deserialize<TheRecord> json
         Assert.AreEqual(expected, actual)
 
+    [<Test>]
+    let ``Private record type serialization/deserialization`` () =
+        let expected = {
+            theString = "The string"            
+        }        
+        let json = Json.serialize expected
+        let actual = Json.deserialize<PrivateRecord> json
+        Assert.AreEqual(expected, actual)
+        
+    [<Test>]
+    let ``Private DU type serialization/deserialization`` () =
+        let expected = {
+            theString = "The string"            
+        }
+        let a = A "name"
+        let b = B expected
+        let c = C (5, 5)
+        
+        let jsonA = Json.serialize a
+        let jsonB = Json.serialize b
+        let jsonC = Json.serialize c
+        let actualA = Json.deserialize<PrivateDU> jsonA
+        let actualB = Json.deserialize<PrivateDU> jsonB
+        let actualC = Json.deserialize<PrivateDU> jsonC
+        
+        Assert.AreEqual(a, actualA)
+        Assert.AreEqual(b, actualB)
+        Assert.AreEqual(c, actualC)
+    
     type InnerRecord = {
         value: string
     }

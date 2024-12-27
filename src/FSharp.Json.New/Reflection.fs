@@ -48,15 +48,29 @@ module internal Reflection =
         t.GetGenericArguments() |> FSharpType.MakeTupleType
 
     let cacheResult (theFunction:'P -> 'R) =
-        let theFunction = new Func<_, _>(theFunction)
+        let theFunction = Func<_, _>(theFunction)
         let cache = new ConcurrentDictionary<'P, 'R>()
-        fun parameter -> cache.GetOrAdd(parameter, theFunction)
+        fun parameter -> cache.GetOrAdd(parameter, theFunction)    
 
-    let isRecord: Type -> bool = FSharpType.IsRecord |> cacheResult
-    let getRecordFields: Type -> PropertyInfo [] = FSharpType.GetRecordFields |> cacheResult
-
-    let isUnion: Type -> bool = FSharpType.IsUnion |> cacheResult
-    let getUnionCases: Type -> UnionCaseInfo [] = FSharpType.GetUnionCases |> cacheResult
+    let isRecord: Type -> bool =
+        fun (type_: Type) ->
+            FSharpType.IsRecord(type_, allowAccessToPrivateRepresentation = true)        
+        |> cacheResult            
+    
+    let getRecordFields: Type -> PropertyInfo[] =
+        fun (type_: Type) ->
+            FSharpType.GetRecordFields(type_, allowAccessToPrivateRepresentation = true) 
+        |> cacheResult
+        
+    let isUnion: Type -> bool =
+        fun (type_: Type) ->
+            FSharpType.IsUnion(type_, allowAccessToPrivateRepresentation = true)
+        |> cacheResult            
+        
+    let getUnionCases: Type -> UnionCaseInfo[] =
+        fun (type_: Type) ->
+            FSharpType.GetUnionCases(type_, allowAccessToPrivateRepresentation = true)
+        |> cacheResult
 
     let isTuple: Type -> bool = FSharpType.IsTuple |> cacheResult
     let getTupleElements: Type -> Type [] = FSharpType.GetTupleElements |> cacheResult

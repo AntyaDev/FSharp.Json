@@ -223,7 +223,8 @@ module internal Core =
             JsonValue.Record fields
 
         let serializeUnion (t: Type) (theunion: obj): JsonValue =
-            let caseInfo, values = FSharpValue.GetUnionFields(theunion, t)
+            let bindingFlags = BindingFlags.Public ||| BindingFlags.NonPublic
+            let caseInfo, values = FSharpValue.GetUnionFields(theunion, t, bindingFlags)
             let jsonUnionCase = getJsonUnionCase caseInfo
             let jsonUnion = getJsonUnion caseInfo.DeclaringType
             let theCase = getJsonUnionCaseName config jsonUnion jsonUnionCase caseInfo
@@ -456,7 +457,7 @@ module internal Core =
         let deserializeTuple (path: JsonPath) (t: Type) (jvalue: JsonValue): obj =
             let types = getTupleElements t
             let tupleValues = deserializeTupleElements path types jvalue
-            FSharpValue.MakeTuple (tupleValues, t)
+            FSharpValue.MakeTuple(tupleValues, t)
 
         let deserializeProperty (path: JsonPath) (fields: (string*JsonValue) array) (prop: PropertyInfo): obj =
             let jsonField = getJsonFieldProperty prop
@@ -471,7 +472,8 @@ module internal Core =
             | JsonValue.Record fields ->
                 let props: PropertyInfo array = getRecordFields t
                 let propsValues = props |> Array.map (deserializeProperty path fields)
-                FSharpValue.MakeRecord(t, propsValues)
+                let bindings = BindingFlags.Public ||| BindingFlags.NonPublic
+                FSharpValue.MakeRecord(t, propsValues, bindings)
             | _ -> failDeserialization path "Failed to parse record from JSON that is not object."
 
         let getUnionCaseInfo (path: JsonPath) (t: Type) (jCaseName: string): UnionCaseInfo =
@@ -500,7 +502,9 @@ module internal Core =
                 | _ ->
                     let propsTypes = props |> Array.map (fun p -> p.PropertyType)
                     deserializeTupleElements casePath propsTypes jCaseValue
-            FSharpValue.MakeUnion (caseInfo, values)
+            
+            let bindings = BindingFlags.Public ||| BindingFlags.NonPublic                    
+            FSharpValue.MakeUnion (caseInfo, values, bindings)
         
         let deserializeUnion (path: JsonPath) (t: Type) (jvalue: JsonValue): obj =
             let jsonUnion = t |> getJsonUnion
@@ -516,11 +520,15 @@ module internal Core =
                     | _ ->
                         let propsTypes = props |> Array.map (fun p -> p.PropertyType)
                         deserializeTupleElements path propsTypes jvalue
-                FSharpValue.MakeUnion (caseInfo, values)
+                
+                let bindings = BindingFlags.Public ||| BindingFlags.NonPublic                        
+                FSharpValue.MakeUnion(caseInfo, values, bindings)
             | _ ->
                 match jvalue with
                 | JsonValue.String caseName ->
-                    FSharpValue.MakeUnion (caseName |> getUnionCaseInfo path t, null)
+                    let bindings = BindingFlags.Public ||| BindingFlags.NonPublic
+                    FSharpValue.MakeUnion(caseName |> getUnionCaseInfo path t, null, bindings)
+                    
                 | JsonValue.Record fields ->
                     match jsonUnion.Mode with
                     | UnionMode.CaseKeyDiscriminatorField ->
